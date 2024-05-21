@@ -130,6 +130,20 @@
 
 
 
+#2 AWS Code Pipeline
+
+- Till now, we are triggering build manually. Pipeline has to be triggered automatically which is to be doen by Code Pipeline when change is oushed to github repository.
+
+- Go to Code Pipeline and create as "python-app". Connect to GitHub (Version2)
+- This connection is established as when code commit is done, it will auto trigger pipeline for the build.
+
+<img width="744" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/51af7519-e6be-4dae-bf49-abef8421ce74">
+
+- Set build provider and project name as below
+
+  <img width="959" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/5c0ff32e-b6d8-4715-b879-ec4e59f12feb">
+
+  - By this way our CI Pipeline is created !!! If we commit any change in repository, pipeline gets triggered automatically.
 
 
 
