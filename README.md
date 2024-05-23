@@ -81,6 +81,8 @@
 
   <img width="790" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/f68b5c70-0952-4d3a-9908-c880b9db5a6d">
 
+# Error Rectification
+
 - Now start the Build for first time. It will fail at first if we have done manual errors.
 
 1. First Failed attempt due to invalid phase names :- pre_build and post_build
