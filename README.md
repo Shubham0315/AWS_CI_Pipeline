@@ -132,6 +132,7 @@
 
 
 
+
 #2 AWS Code Pipeline
 
 - Till now, we are triggering build manually. Pipeline has to be triggered automatically which is to be doen by Code Pipeline when change is oushed to github repository.
