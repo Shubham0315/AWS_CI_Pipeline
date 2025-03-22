@@ -5,28 +5,47 @@
 
 ![image](https://github.com/user-attachments/assets/b8255c2d-d0ac-4ccf-b5b4-d74837033646)
 
+- In GitHub create "simple-python-app"
+  - This repo has veru basic flask code
+ 
+![image](https://github.com/user-attachments/assets/8f1698ba-4530-468d-b239-1eb1bd546f8a)
+
+  - We also have requirements file for python app (flask)
+  - We've dockerfile here to build application image and push it to dockerhub. So we've python related dockerfile as well. Here we're using python based image, created WORKDIR, COPY requirements file, exposed port
+
+![image](https://github.com/user-attachments/assets/fd697807-d8d9-4275-a3a5-f18dd07ee30a)
+
+  - We also have buildspec.yml. We'll write this file in our pipeline.
 
 #1. AWS Code Build
 
 - Go to AWS Code build and create AWS Code build project as below.
-- Project Name :- **simple-python-app**
+- Project Name :- **python-flask-service-app**
 
-<img width="674" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/bf998a3c-8cbd-4575-bd53-b7bb48c67082">
+![image](https://github.com/user-attachments/assets/9e013452-92d7-462e-a21a-57dcec2f0640)
 
-- In source section, provide source as GitHub. If not conneceted to GitHub account, *"Connect with OAuth"* or *"Connect with GitHub personal Access token"*
+- We can also restrict no of concurrent builds here
+
+- In source section, provide Code Commit repo as GitHub. If not conneceted to GitHub account, *"Connect with OAuth"* or *"Connect with GitHub personal Access token"*
+
+![image](https://github.com/user-attachments/assets/54d75c29-323c-4bcf-80af-9e25d84be103)
+
+- Now our code build is integrated with GitHub
+
 - If GitHub is connected with AWS, provide repository type as *"Public repo"* or *"Repo in my GitHub account"* and provide URL
 
-<img width="821" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/c81fe8c1-8189-42db-8654-ba0e7fd66be1">
+![image](https://github.com/user-attachments/assets/53e0cb5f-65df-4d30-a662-b18798584b2f)
 
 - Go to environment section now.
-  As AWS Code pipeline acts as orchestrator which invokes AWS Code build, so we need to provide environment for AWS Code build
-  Here environment will be VM image or Docker image. Environment image will be managed image or custom image
+  - As AWS Code pipeline acts as orchestrator which invokes AWS Code build, so we need to provide environment for AWS Code build
+  - Here environment will be VM image or Docker image. Environment image will be managed image or custom image
 
-  <img width="778" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/abb59051-e09f-43e5-be9b-0cbec15f301a">
+![image](https://github.com/user-attachments/assets/29578973-aa65-402d-8019-930658c2d8ce)
 
-  In managed images choose image required (Amazon Linux, Ubuntu or Windows). Then choose runtime and choose latest image. Here AWS code build we use as Builds service. As this is managed service, AWS will provide you images where we can run our code build on them.
+  - In managed images choose image required (Amazon Linux, Ubuntu or Windows). Then choose runtime and choose latest image. Here AWS code build we use as Builds service. As this is managed service, AWS will provide you images where we can run our code build on them. This is provided by AWS only
+  - On contrary, in Jenkins what we do is create worker nodes on top of which we install operating systems and run pipelines on the environment. 
 
-- Now select "Service Role". For Code build to perform action on AWS needs service role or an IAM role. As it is service performing some action, we're using Role not IAM users. Users dont perform action here.
+- Now select "Service Role". In AWS, for Code build to perform action on AWS needs service role or an IAM role. As it is service performing some action, we're using Role not IAM users. Users dont perform action here.
 - Go to IAM Roles to create one like below which uses code build service and grant required permission for roles.
 
   <img width="959" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/8b02b54a-72f0-42d9-8ab9-a0447952c19b">
