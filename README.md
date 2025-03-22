@@ -46,38 +46,51 @@
   - On contrary, in Jenkins what we do is create worker nodes on top of which we install operating systems and run pipelines on the environment. 
 
 - Now select "Service Role". In AWS, for Code build to perform action on AWS needs service role or an IAM role. As it is service performing some action, we're using Role not IAM users. Users dont perform action here.
-- Go to IAM Roles to create one like below which uses code build service and grant required permission for roles.
+- Go to IAM Roles to create one like below which uses code build service and grant required permission for roles. We can give any name
 
-  <img width="959" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/8b02b54a-72f0-42d9-8ab9-a0447952c19b">
+![image](https://github.com/user-attachments/assets/d12e8525-5108-4a2e-8604-83e06488fbf7)
 
-  <img width="959" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/8f652b87-3f2a-41b2-9986-45252ff1dfab">
 
-  Below is snap of adding role to our Build project
+- Below is snap of adding role to our Build project
 
   <img width="635" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/e509e721-1819-4a00-98c7-353505173ab6">
 
-- Build Spec
-  For all stages of pipeline to execute we need to write code which we write here. We can use Build spec file from github or we can write commands specific manually.
+Build Spec
+- 
+- For all stages of pipeline to execute we need to write code which we write here for checkout, image creation, image scanning. We can use Build spec file from github repo or we can write commands specific manually. To write manually "switch to editor"
+
+![image](https://github.com/user-attachments/assets/990e48b3-41e0-4a06-ac69-7ba0c6ba61e0)
+
 - Here write the stages as below.
-  We can start with "Phases" stage. As per snap, we have ubuntu image with python runtime.
-  Start writing pre build stage. Here we can define the requirements.txt file for our image to run as it installs dependencies.
+  - We can start with "Phases" stage. Install phase, we need to select runtime needed which is python here.
+ 
+![image](https://github.com/user-attachments/assets/8eee3c52-f361-40cd-ba3a-232d481dca0c)
 
-  <img width="797" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/5ba098e3-8a37-427b-ac3f-37050f8ec228">
+  - Start writing pre build stage. Here we can define the requirements.txt file for our image to run as it installs dependencies of flask mentioned (pre-requisite)
 
-  Now go to build stage, write required commands to build image. Here as of now we need to build image and push to docker hub
-  So in below snap we can see, we navigated to the directory (cd .), started build, executed docker commands to create image from dockerfile and push the same to Docker hub.
+![image](https://github.com/user-attachments/assets/1be358e0-89c2-415e-9c65-20c0abafa826)
+
+  - Now go to build stage. We need to checkout the code which will happen automatically as we've already integrated GitHub repo.
+  - Next step is to build the app, build docker image and push it. Write required commands to build image. Here as of now we need to build image and push to docker hub
+  - So in below snap we can see, we navigated to the directory (cd .), started build, executed docker commands to create image from dockerfile and push the same to Docker hub.
+  - To build docker image, we need to pass image name, user and password which we'll store in AWS syetems manager later. If we directly put password and username here, whoever has access to this buildspec file can use it (security)
 
   <img width="378" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/66619572-2767-4dd6-8869-cc2429157740">
   
-  We've given tage in above image as we wont update them as they are sensitive. We can store them in AWS credentials manager. If we provide user and password in tag in above snap, anyone who opens the file can use that compromising security.
+  - We've given tag in above image as we wont update them as they are sensitive. We can store them in AWS credentials manager. If we provide user and password in tag in above snap, anyone who opens the file can use that compromising security.
 
 - As we're only doing CI here, in post-build actions add only success statement. So our final buildspec.yml file will look like :-
 
-<img width="805" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/8396b78f-6ed4-4bc1-8515-a60f1d4ac6ea">
+![image](https://github.com/user-attachments/assets/f8f8d851-0bca-45db-93fb-47e7a0db7e16)
 
 - After all is done, create project of build.
 
-<img width="958" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/a1207658-8869-4345-a452-4e82c34d5a4f">
+![image](https://github.com/user-attachments/assets/82089f85-0787-4aea-bf99-93e1da658851)
+
+- To create role, go to IAM role - create role - add permissions - provide name of role
+
+![image](https://github.com/user-attachments/assets/6a9b36f4-ef0e-4576-8c82-7cfefa8ac70f)
+
 
 - If now we trigger the build, it will take code from Code Commit and will trigger build.
 
