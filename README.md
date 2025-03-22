@@ -98,23 +98,38 @@ Build Spec
 # Store Sensitive Information
 
 - Go to "AWS System Manager" and go to "Parameters Store"
-- While naming follow standard like project name/parameter so even if we store parameters for 100s of services, we can easily identify which parameter us for what use case.
-  Select "Secure string". Then put value of parameter inside "Value" attribute
-  /myapp/docker-credentials/username  :- Shubham315
-  /myapp/docker-credentials/password  :- Charger@7701
-  /myapp/docker-credentials/docker_registry_url       :- docker.io  (as credentials are already provided)
 
-  <img width="958" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/b88ddc1c-4396-425c-a166-8bf537f7cc36">
+<img width="959" alt="image" src="https://github.com/user-attachments/assets/2c0b8d78-0001-476b-9680-1912d4274d74" />
+
+- To create parameter - Create - Provide name (follow standard) - Select "SecureString" - Put its value at last
+
+![image](https://github.com/user-attachments/assets/870cb4c5-3870-490a-b420-06e29750b322)
+![image](https://github.com/user-attachments/assets/75c52f2f-7ce7-47a4-ac7b-925778569cab)
+
+- While naming follow standard like project name/parameter so even if we store parameters for 100s of services, we can easily identify which parameter us for what use case. So provide in proper way and follow a standard.
+  - /myapp/docker-credentials/username  :- Shubham315
+  - /myapp/docker-credentials/password  :- Charger@7701
+  - /myapp/docker-credentials/docker_registry_url :- docker.io  (as credentials are already provided)
+
+![image](https://github.com/user-attachments/assets/7dc2b3d7-2482-46c7-9997-e81de48e3f3c)
+
+---------------------------------------------------------------
 
 # Configure Credentials in buildspec file
 
-- Go to Code Build. Open Build Details and edit buildspec.yml and pass the credentials as below
+- Go to Code Build. Open project Details and edit buildspec.yml and pass the credentials as below
+  - Use env variable as "parameter store" where we've stored our credentials
+  - Instead of exposing registry in buildspec file, we can pass them in parameter store and use it from there like below format
 
-  <img width="495" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/d35dbd86-f1aa-45ef-8a77-3d260637125b">
+![image](https://github.com/user-attachments/assets/bd198e2e-54a1-4c6c-b5ab-3c3fa080784c)
+![image](https://github.com/user-attachments/assets/82effe2d-a554-41e4-a9c2-17797e28fbcb)
 
 - The build and push command also need to be updated as per below.
 
   <img width="790" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/f68b5c70-0952-4d3a-9908-c880b9db5a6d">
+
+
+-----------------------------------------------------------------
 
 # Error Rectification
 
@@ -127,8 +142,9 @@ Build Spec
 - Here provided the docker credentials but did not grant AWS code build access to system manager.
 - We have attached role but that role doesn't have permission to talk with AWS System Manager
 - Go to IAM, our role and attach policies of SSM full access (SSM is System Manager)
+- Go to our role - Add permissions - Attach policies - SSM
 
-<img width="949" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/28cc9133-0ce7-4f33-8bc9-3830184d4122">
+![image](https://github.com/user-attachments/assets/0345459e-5a0a-44c6-9385-8d52f695d611)
 
 3. Now we get 3rd error due to misconfiguration
 
@@ -140,62 +156,61 @@ Build Spec
 4. Now we get below error while build failed 4th time
 - Push command should not contain dot (.)
 
-<img width="652" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/128078ad-bd35-492b-9e5f-d48cecd46d67">
+![image](https://github.com/user-attachments/assets/055fe2fc-ee73-44df-bb00-6201fb03f131)
 
-5. Below error might be due to our credentials are not proper
+5. Below error might be due to our credentials are not proper. Need to set additional permissions to code build
 
 <img width="750" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/73e7033f-e898-4fb3-8b90-fa6160a52f5c">
 
-- By default AWSCode build doesnt allow to create docker images on build system it provides. Click on override image option and enable "Privilege"
+- Go to project - Edit - Environment - Enable priviledged
+- By default AWSCode build doesnt allow to create docker images on build system it provides. Click on override image option and enable "Privileged"
 
-<img width="644" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/c403edf5-3ffb-40a7-b847-fec0e3b7d3bd">
+![image](https://github.com/user-attachments/assets/7d04b32c-0115-4b4a-a6dd-65bd5112d1e5)
 
-- Here we missed the docker login command
-
+- Now we can restart build. Here we missed the docker login command
 - Also in push command, it should be docker.io not the URL
 
-<img width="546" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/1927a0a9-b038-4113-a9c7-75489ae49ad5">
+![image](https://github.com/user-attachments/assets/315e0dbf-c69c-4e9c-a29d-10e9bbf287ab)
 
-- Finally we got our CI pipeline implemented successfully.
+- We also need to authenticate the crdentials using docker login
+  - Command :-  echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin "$DOCKER_REGISTRY_URL"
 
-<img width="610" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/348fc783-7708-43e5-a120-e5397f7248bf">
+![image](https://github.com/user-attachments/assets/973a579e-c8c4-4410-9d7f-da5b885b9dea)
 
-- After resolving all errros, we have successuflly pushed our image to docker hub
+- Now trigger the build project. Finally we got our CI pipeline implemented successfully.
 
-<img width="959" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/938e2c8d-5d7d-421c-b112-fb94ae039a22">
+![image](https://github.com/user-attachments/assets/ddf38147-7a69-4035-9311-b9ddcd799813)
 
+- We can login to dockerhub to check if the image is pushed there. After resolving all errros, we have successuflly pushed our image to docker hub with "latest" tag
+
+![image](https://github.com/user-attachments/assets/dc49bebe-dcf6-49c1-9208-0c59df191793)
 
 
 
 
 #2 AWS Code Pipeline
 
-- Till now, we are triggering build manually. Pipeline has to be triggered automatically which is to be doen by Code Pipeline when change is oushed to github repository.
+- Till now, we are triggering build manually. We need to integrate the code build with pipeline. Pipeline has to be triggered automatically which is to be done by Code Pipeline when change is oushed to github repository.
 
 - Go to Code Pipeline and create as "python-app". Connect to GitHub (Version2)
 - This connection is established as when code commit is done, it will auto trigger pipeline for the build.
 
-<img width="744" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/51af7519-e6be-4dae-bf49-abef8421ce74">
+![image](https://github.com/user-attachments/assets/0be1ac2f-54b2-4535-808c-8104ac62562c)
+![image](https://github.com/user-attachments/assets/0e2ce052-22ef-41c6-8dee-a9c5f43db219)
 
-- Set build provider and project name as below
+- Give Source provider as "GitHub " and connect to github - Provide connection name and connect. So when there is change in GitHub, it has to send request to pipeline to invoke. So connection is required
+  - Provide repo name - Branch name
 
-  <img width="959" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/5c0ff32e-b6d8-4715-b879-ec4e59f12feb">
+![image](https://github.com/user-attachments/assets/52438509-8449-4c44-9b94-ac63741f7754)
 
-  - By this way our CI Pipeline is created !!! If we commit any change in repository, pipeline gets triggered automatically.
+- Give build provider - Project name (auto fetched)
 
-
-
-
-
-
-  
-
-    
+![image](https://github.com/user-attachments/assets/031cfda0-bb27-497a-92ed-e4f4ec6d653b)
 
 
+- By this way our CI Pipeline is created !!! If we commit any change in repository, pipeline gets triggered automatically.
 
-
-- 
+![image](https://github.com/user-attachments/assets/940bddb7-5a36-4528-bc6d-fa7fccbd95de)
 
 
 
