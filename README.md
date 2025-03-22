@@ -3,10 +3,13 @@
 - This project is a use case of AWS Code commit, AWS Code pipeline, AWS Code Build
 - Start with code build so that we can build project with all steps like Code checkout, Build and UT, Code scan, Image build, image scan and image push. After that create pipeline for orchestration.
 
+![image](https://github.com/user-attachments/assets/b8255c2d-d0ac-4ccf-b5b4-d74837033646)
+
+
 #1. AWS Code Build
 
 - Go to AWS Code build and create AWS Code build project as below.
-- Project Name :- sample-python-flask-service
+- Project Name :- **simple-python-app**
 
 <img width="674" alt="image" src="https://github.com/Shubham0315/AWS_CI_Pipeline/assets/105341138/bf998a3c-8cbd-4575-bd53-b7bb48c67082">
 
