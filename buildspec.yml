@@ -19,7 +19,7 @@ phases:
     commands:
       - echo "Building Docker Image"
       - docker build -t "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_USERNAME/python-flask-service-app:latest" .
-      - docker push "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_USERNAME/python-flask-service-app:latest"
+      - docker push "docker.io/$DOCKER_REGISTRY_USERNAME/python-flask-service-app:latest"
       
   post_build:
     commands:
