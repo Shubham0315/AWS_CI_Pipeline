@@ -214,3 +214,61 @@ Build Spec
 
 
 
+#3. AWS Code Deploy
+
+- Open code deploy
+
+![image](https://github.com/user-attachments/assets/49db0acd-3127-4f7b-a1a2-ed7ba0607a3d)
+
+- Go to applications - Create application - Provide name - Choose compute platform(EC2) - Create
+  - In our organization we might've multiple apps like microservices.For each one we need to create app.
+ 
+![image](https://github.com/user-attachments/assets/1b11a6e8-2d71-4ceb-8d4b-f85d85fc85b2)
+![image](https://github.com/user-attachments/assets/1d20fc4b-e9fa-468f-9690-f9ce75e8f11b)
+
+- Now our goal is to deploy the app on EC2 instance. So we'll need EC2 instance to host our app
+
+![image](https://github.com/user-attachments/assets/b68aa40d-d3ba-4d23-a7c2-eccc088c3091)
+![image](https://github.com/user-attachments/assets/09acae5c-164c-460d-9114-ae62308d0b84)
+
+- For every AWS resource we can create tags (unique identifier). To differentiate EC2 amongst teams.
+  - Go inside instance - Actions - Instance settings - Manage tags
+
+<img width="959" alt="image" src="https://github.com/user-attachments/assets/a2fc1290-ee04-454b-a947-cf4e27f428a2" />
+
+  - For any created resources for application(suppose payments), we can use tags. This will help DevOps engineers to keep track of resources created. So instead of going to resources and check what is created, we can just filter using tags. We can pass key-value pairs to get entire list of resources.
+  - Tags can be multiple depending on requirement.
+
+![image](https://github.com/user-attachments/assets/ae54afce-5209-4ef5-a875-5cea97f2dd0d)
+![image](https://github.com/user-attachments/assets/b1d2dd5d-deae-492d-bdbe-c4de27f00c42)
+
+  - The tag "sample-python" created will be used by code-deploy service. There can be multiple EC2 instances in AWS account of same name so we can use tags concept.
+  - Code deploy can be used to deploy on multiple EC2 instances as well.
+
+- Now we need to install agent inside EC2 - Code deploy agent (Just like jenkins
+  - Go to EC2 instance - Connect
+  - sudo apt update
+  - sudo apt install ruby-full
+  - sudo apt install wget
+  - Install runner (bucket name for Ohio region from google) :- wget https://aws-codedeploy-us-east-2.s3.us-east-2.amazonaws.com/latest/install
+
+![image](https://github.com/user-attachments/assets/b6c10092-748a-44c3-b286-a00f5c52b3d5)
+
+  - chmod +x ./install
+  - sudo ./install auto
+  - To check service status (started by default) :- **sudo service codedeploy-agent status**
+
+![image](https://github.com/user-attachments/assets/c1849ce0-7bfa-4742-a344-35d1d45b0afd)
+
+  - If we get No codedeploy agent running :- **sudo service codedeploy-agent start**
+
+- Now we've to give permissions to the EC2.
+  - Create role for EC2 and grant it permission to talk to Code deploy.
+  - Go to IAM - Create role
+ 
+![image](https://github.com/user-attachments/assets/a76d3248-ba95-40c8-b8a8-34ceca29f21a)
+![image](https://github.com/user-attachments/assets/d4acb79c-3d7e-48af-904e-e3176d3c17ef)
+
+  - Now assign the role to EC2 - Go to instances - Actions - Security - Modify IAM role
+
+![image](https://github.com/user-attachments/assets/667f5988-4ca6-4962-b792-1e3c4445d19d)
