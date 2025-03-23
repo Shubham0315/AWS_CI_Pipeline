@@ -328,3 +328,11 @@ Build Spec
   - Code deploy
  
 ![image](https://github.com/user-attachments/assets/3ba427fe-585a-4365-b1db-616202aba6f5)
+
+
+-----------------------------------------------------------------------------
+
+Overview of Project
+-
+- Instead of code commit we've used GitHub which triggeres code pipeline which triggers code build first and then triggers code deploy
+- When code deploy is triggered, new image will be pushed to docker registry
