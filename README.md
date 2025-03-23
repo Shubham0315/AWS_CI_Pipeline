@@ -272,3 +272,59 @@ Build Spec
   - Now assign the role to EC2 - Go to instances - Actions - Security - Modify IAM role
 
 ![image](https://github.com/user-attachments/assets/667f5988-4ca6-4962-b792-1e3c4445d19d)
+
+- Now restart the service :- **sudo service codedeploy-agent restart**
+  - If we dont restart, agent within EC2 wont be able to communicate to code deploy
+ 
+- Now configure code-deploy
+  - We've created the application till now in code deploy
+  - Provide EC2 as an agent in code deploy first
+  - There can be 100s of apps inside code deploy so to map app to correct EC2 this needs to be done (provide target group)
+  - Create deployment group - Provide name - Enter service role - Select deployment type (simple or blue-green) - Provide environment configuration (key-value) - Here we get 1 matching instance (tags) - Create deployment group
+ 
+![image](https://github.com/user-attachments/assets/487919ce-1443-4da1-89da-866bccc7afd2)
+![image](https://github.com/user-attachments/assets/c023b326-ed24-4fd4-927a-d81388c3c096)
+![image](https://github.com/user-attachments/assets/8d461f7f-3ac7-4243-98e8-5c18670bd1b1)
+![image](https://github.com/user-attachments/assets/55081e95-e97b-43d8-aa07-85f19c01a21b)
+
+- We've created Code deploy app, created EC2 for it and integrated both of them. Now we've to deploy app.
+
+- For code-deploy we've appspec.yml file. We'll put this file in our GitHub repo and we've to create deployment inside application of code-deploy.
+  - Create deployment - Provide deployment group - Select revision type (App hosted on S3 or GitHub) - Provide token - Provide repo name - Provide commit ID (latest from GitHub) - Create deployment
+  - We've to provide commit ID to verify if our CDel is working fine or not.
+
+![image](https://github.com/user-attachments/assets/4f6b7791-60ce-4bdb-bb74-8983956a2a96)
+![image](https://github.com/user-attachments/assets/d9553b1c-3d51-4d90-b940-30a6512b431b)
+
+  - But now when we check our deployment, our deployment process fails as appsepc.yml has to be at the root of our repo. (unlike builspec.yml which we can write at any location)
+
+![image](https://github.com/user-attachments/assets/b3f74ebf-aaf0-4fca-bc03-f9c288586ff5)
+
+- We've our application puhsed to dockerhub.
+  - Write start and stop container now as below and commit the files
+
+![image](https://github.com/user-attachments/assets/bb9aad3f-07b8-4052-a029-499e26a054af)
+![image](https://github.com/user-attachments/assets/468c5a02-b268-4014-82b3-1a963f5525e3)
+
+- Now as we've made some changes, delete the deployment orcreate new deployment
+
+![image](https://github.com/user-attachments/assets/2eb3fb2f-0166-4279-a270-9c4f972769ed)
+
+  - Now we can go inside depployment and check events
+  - Install docker :- **sudo apt install docker**
+
+![image](https://github.com/user-attachments/assets/06ca8f11-22cd-46a4-9838-854d9bdff956)
+
+  - Now run the deployment it will get succeeded.
+
+- Now go to code pipeline and add one more stage to it
+  - Edit - Add stage - Name as code-deploy - Edit action as below
+ 
+![image](https://github.com/user-attachments/assets/76262e96-2b54-40f8-a476-e84256a2aff8)
+
+- Now when we check our pipeline, we've below stages
+  - Source stage (commit)
+  - Code build
+  - Code deploy
+ 
+![image](https://github.com/user-attachments/assets/3ba427fe-585a-4365-b1db-616202aba6f5)
